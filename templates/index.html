@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="static/style.css">
+    <title>Lista de Tarefas Acessível</title>
+</head>
+<body>
+    <!-- Link de pular conteúdo para acessibilidade (WCAG) -->
+    <a href="#main-content" class="skip-link">Pular para o conteúdo</a>
+
+    <!-- Título esperado pelo teste -->
+    <h1 id="main-content">Lista de Tarefas Acessível</h1>
+
+    <!-- Mensagens flash (erros ou sucesso) -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flashes">
+        {% for category, message in messages %}
+          <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <!-- Formulário de adição de tarefa -->
+    <form action="{{ url_for('adicionar') }}" method="POST">
+        <label for="titulo-tarefa">Nova Tarefa:</label>
+        <input type="text" id="titulo-tarefa" name="titulo" required aria-required="true" placeholder="Ex: Estudar WCAG">
+        <button type="submit">Adicionar</button>
+    </form>
+
+    <!-- Lista de tarefas -->
+    <ul>
+    {% for tarefa in tarefas %}
+        <li class="{{ 'tarefa-concluida' if tarefa.concluida else '' }}">
+            {{ tarefa.titulo }}
+            <form action="{{ url_for('alternar', tarefa_id=tarefa.id) }}" method="POST" style="display:inline">
+                <button type="submit">Alternar</button>
+            </form>
+            <form action="{{ url_for('deletar', tarefa_id=tarefa.id) }}" method="POST" style="display:inline">
+                <button type="submit">Deletar</button>
+            </form>
+        </li>
+    {% endfor %}
+    </ul>
+</body>
+</html>
